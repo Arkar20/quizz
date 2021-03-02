@@ -48,5 +48,8 @@ class User extends Authenticatable
         // $data['email']=$data['mail'];
         return User::create($data);
     }
-    
+    public function results()
+    {
+        return $this->belongsTo(Result::class,'id','user_id');
+    }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use auth;
 use App\Models\User;
 use App\Models\Quizz;
 use App\Models\Answer;
@@ -12,6 +11,7 @@ use Illuminate\Http\Request;
 
 use Laravel\Ui\Presets\React;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ExamController extends Controller
 {
@@ -108,7 +108,7 @@ class ExamController extends Controller
         // return only correct answers
 
 
-return $questionWithAnswers;
+// return $questionWithAnswers;
     //     $resultids=[];
     //    $result=DB::table('quizz_users')->where('user_id',$user->id)->where('quizz_id',$quizz->id)->pluck('quizz_id');
     //    $question=Question::wherein('quizz_id',$result)->get();
@@ -116,14 +116,31 @@ return $questionWithAnswers;
     //     $questions=$quizz->questions;
     //     $userResult=Answer::where('id', $question->id)->get();
         $marks=0;
-        foreach($questionWithAnswers->answers as $correctanswer){
+         $answers=[];
+        $useranswer = DB::table('results')
+            ->where(
+                'user_id',
+                $user->id,
+            )->where('quizz_id', $quizz->id)
+            ->pluck('answer_id');
+        foreach($questionWithAnswers as $question){
             // dd($correctanswer->is_correct);
-            if($correctanswer->is_correct==1){
-                $marks++;
-            }
-        }
-        dd($result);
+            foreach ($question->answers as $answer){
+                            array_push($answers,$answer->answer);
 
-        return view('backend.exam.result',compact('quizz','questions','userResult','marks'));
+                if ($answer->is_correct == 1) {
+                    $marks++;
+                }
+            }
+           
+        }
+       
+        //    dd($useranswer);
+        return view('backend.exam.result',['quizz'=>$quizz,
+                         'questions' =>$questionWithAnswers,
+                        'userResult'=>$answers,
+                        
+                        'useranswer'=>$useranswer
+                        ]);
     }
 }

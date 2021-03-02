@@ -6,21 +6,25 @@
    <div class="card">
        <div class="card-header text-uppercase">
            {{$quizz->name}}
-          Marks {{$marks}} of {{$userResult->count()}}
+           
+          Marks {{$marks ??''}} of {{$questions->count()}}
        </div>
        <div class="card-body">
            @foreach ($questions  as $key=>$question)
                   <h3>{{$question->question}}</h3>
-                    @foreach ($question->answers as $answer)
+                    @foreach ($question->answers as $index=>$answer)
                    
                         <p>{{$answer->answer}}
                             @if ($answer->is_correct==1)
-                            <span class="text-success">Correct Answer</span>
+                            <span class="text-success">Correct Answer
+                                
                             @endif
-                            {{-- @if ($userResult[$key]->id==$answer->id)
                             
-                                <span class="text-success">V</span>
-                            @endif --}}
+                            @if ($useranswer[$key]==$answer->id)
+                           
+                                    <span class="badge">Thick</span>
+                                @endif
+                            </span>
                         </p>
                     @endforeach
            @endforeach
